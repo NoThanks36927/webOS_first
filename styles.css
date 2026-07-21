@@ -1,0 +1,45 @@
+:root {
+  --baseHexWidth: 15rem;
+}
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  text-align: center;
+}
+
+.flexContainer {
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+}
+
+.octagon {
+  display: flex;
+  height: var(--baseHexWidth);
+  width: var(--baseHexWidth);
+  clip-path: polygon(
+    30% 0%,
+    70% 0%,
+    100% 30%,
+    100% 70%,
+    70% 100%,
+    30% 100%,
+    0% 70%,
+    0% 30%
+  );
+  background-color: aquamarine;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.middleOctagon{
+    font-size: larger;
+    justify-self: center;
+    margin: auto;
+}
+
