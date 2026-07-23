@@ -17,7 +17,7 @@ body {
 
 }
 
-.octagon {
+svg>g>circle {
   display: flex;
   height: var(--baseHexWidth);
   width: var(--baseHexWidth);
@@ -31,9 +31,9 @@ body {
     0% 70%,
     0% 30%
   );
-  background-color: aquamarine;
   align-items: center;
   justify-content: center;
+  color: yellow;
 }
 
 

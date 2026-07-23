@@ -1,22 +1,23 @@
 {
-    "Text": "What's next?",
+    "name": "What's next?",
     "children": [
         {
-            "Text": "Projects",
+            "name": "Projects",
             "children":""
         },
         {
-            "Text": "School",
+            "name": "School",
             "children":""
         },
         {
-            "Text":"Studying(Fun)",
+            "name":"Studying(Fun)",
             "children":""
         },
         {
-            "Text":"Unwind",
+            "name":"Unwind",
             "children":""
         }
-    ]
+    ],
+    "isMain": "true"
   }
   

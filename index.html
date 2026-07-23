@@ -2,15 +2,19 @@
 <html lang="en">
   <head>
     <title>WebOS</title>
+    <link
+      rel="shortcut icon"
+      href="https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico"
+      type="image/x-icon"
+    />
+
+    <script src="scripts/d3.v7.js"></script>
+    <script src="scripts/main.js" type="module"></script>
+
     <link rel="stylesheet" href="styles.css" />
-    <script src="main.js"></script>
   </head>
   <body>
     <h1>Welcome back!</h1>
-    <div class="flexContainer">
-      <div class="middleOctagon octagon">
-        <p>What's next?</p>
-      </div>
-    </div>
+    <div class="flexContainer" id="chartHolder"></div>
   </body>
 </html>
