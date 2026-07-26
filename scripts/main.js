@@ -1,20 +1,5 @@
-class Octagon {
-  text = "";
-  children = [];
-  constructor(givenText, givenIsParent, childrenGiven) {
-    text = givenText;
-    isParent = givenIsParent;
-    children = childrenGiven;
-  }
-
-  addChildren(childrenToAdd) {
-    for (let i = 0; i < childrenToAdd.length; i++) {
-      this.children.push(childrenToAdd[i]);
-    }
-  }
-  isParent() {
-    return this.children !== undefined && this.children.length != 0;
-  }
+function getOctagonPoints(r) {
+  return `${r / 3},${r} ${r},${r / 3} ${r},${-r / 3} ${r / 3},${-r} ${-r / 3},${-r} ${-r},${-r / 3} ${-r},${r / 3} ${-r / 3},${r}`;
 }
 
 const DATA_JSON =
@@ -29,6 +14,8 @@ const height = chartParent.offsetHeight;
 const root = d3.hierarchy(data);
 const links = root.links();
 const nodes = root.descendants();
+const bigSize = 125;
+const smallSize = 75;
 
 const simulation = d3
   .forceSimulation(nodes)
@@ -37,10 +24,14 @@ const simulation = d3
     d3
       .forceLink(links)
       .id((d) => d.id)
-      .distance(500)
-      .strength(2),
+      .distance(300)
+      .strength(0.5),
   )
   .force("charge", d3.forceManyBody())
+  .force(
+    "collision",
+    d3.forceCollide((d) => (d.data.isMain ? bigSize : smallSize) + 10),
+  )
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
@@ -59,62 +50,20 @@ const link = svg
   .data(links)
   .join("line");
 
-// const node = svg
-//   .append("g")
-//   .attr("stroke", "#fff")
-//   .attr("stroke-width", 1.5)
-//   .selectAll("circle")
-//   .data(nodes)
-//   .join("circle")
-//   .attr("r", (d) => (d.data.isMain == true ? 75 : 75))
-//   .attr("fill", "#663399");
+const node = svg.append("g").selectAll("g").data(nodes).join("g");
 
-// node.append("text")
-//     .attr("x", 8)
-//     .attr("y", "5em")
-//     .text(d => d.data.name)
-//   .clone(true).lower()
-//     .attr("fill", "none")
-//     .attr("stroke", "white")
-//     .attr("stroke-width", 3);
+node
+  .append("polygon")
+  .attr("points", (d) => getOctagonPoints(d.data.isMain ? bigSize : smallSize))
+  .attr("fill", "#663399");
 
-const node = svg
-  .append("g")
-  .attr("fill", "currentColor")
-  .attr("stroke-linecap", "round")
-  .attr("stroke-linejoin", "round")
-  .selectAll("g")
-  .data(nodes)
-  .join("circle")
-  .attr("r", (d) => (d.data.isMain == true ? 100 : 55))
-  .attr("fill", "#663399")
-  .join("g");
-
-// node
-//   .append("text")
-//   .attr("x", 8)
-//   .attr("y", "0.31em")
-//   .text((d) => d.data.name)
-//   // .clone(true)
-//   // .lower()
-//   .attr("fill", "none")
-//   .attr("stroke", "white")
-//   .attr("stroke-width", 1);
-
-const prompts = nodes.map((a) => a.data.name);
-
-const text = svg
-  .append("g")
-  .attr("fill", "currentColor")
-  .attr("stroke-linecap", "round")
-  .attr("stroke-linejoin", "round")
-  .selectAll("g")
-  .data(prompts)
-  .join("text")
-  .text((d) => d)
-  .attr("fill", "none")
-  .attr("stroke", "black")
-  .attr("stroke-width", 1);
+node
+  .append("text")
+  .text((d) => d.data.name)
+  .attr("text-anchor", "middle")
+  //  .attr("dominant-baseline", "middle")
+  .attr("fill", "white")
+  .style("font-size", (d) => (d.data.isMain ? "24px" : "16px"));
 
 simulation.on("tick", () => {
   link
@@ -123,9 +72,7 @@ simulation.on("tick", () => {
     .attr("x2", (d) => d.target.x)
     .attr("y2", (d) => d.target.y);
 
-  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-  text.attr("x", (d) => d.x).attr("y", (d) => d.y);
+  node.attr("transform", (d) => `translate(${d.x},${d.y})`);
 });
 
-// Append the SVG element.
 chartParent.append(svg.node());
