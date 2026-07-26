@@ -86,20 +86,35 @@ const node = svg
   .selectAll("g")
   .data(nodes)
   .join("circle")
-  .attr("r", (d) => (d.data.isMain == true ? 100 : 75))
+  .attr("r", (d) => (d.data.isMain == true ? 100 : 55))
   .attr("fill", "#663399")
   .join("g");
 
-node
-  .append("text")
-  .attr("x", 8)
-  .attr("y", "0.31em")
-  .text((d) => d.data.name)
-  .clone(true)
-  .lower()
+// node
+//   .append("text")
+//   .attr("x", 8)
+//   .attr("y", "0.31em")
+//   .text((d) => d.data.name)
+//   // .clone(true)
+//   // .lower()
+//   .attr("fill", "none")
+//   .attr("stroke", "white")
+//   .attr("stroke-width", 1);
+
+const prompts = nodes.map((a) => a.data.name);
+
+const text = svg
+  .append("g")
+  .attr("fill", "currentColor")
+  .attr("stroke-linecap", "round")
+  .attr("stroke-linejoin", "round")
+  .selectAll("g")
+  .data(prompts)
+  .join("text")
+  .text((d) => d)
   .attr("fill", "none")
-  .attr("stroke", "white")
-  .attr("stroke-width", 3);
+  .attr("stroke", "black")
+  .attr("stroke-width", 1);
 
 simulation.on("tick", () => {
   link
@@ -109,6 +124,7 @@ simulation.on("tick", () => {
     .attr("y2", (d) => d.target.y);
 
   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+  text.attr("x", (d) => d.x).attr("y", (d) => d.y);
 });
 
 // Append the SVG element.
