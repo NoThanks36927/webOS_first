@@ -1,8 +1,14 @@
-:root {
-  --baseHexWidth: 15rem;
-}
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+
 html {
   height: 100%;
+  font-family: "Audiowide", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+h1 {
+  font-size: 5rem;
 }
 
 body {
@@ -14,6 +20,4 @@ body {
   display: flex;
   height: 100%;
   width: 100%;
-
 }
-

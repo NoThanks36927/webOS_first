@@ -3,7 +3,12 @@
     "children": [
         {
             "name": "Projects",
-            "children":""
+            "children":[
+                {
+                    "name": "WebOS",
+                    "children":""
+                }
+            ]
         },
         {
             "name": "School",
@@ -11,13 +16,58 @@
         },
         {
             "name":"Studying(Fun)",
-            "children":""
+            "children":[
+                {
+                    "name": "History",
+                    "children":""
+                },
+                {
+                    "name": "Math",
+                    "children":""
+                },
+                {
+                    "name": "Romanian",
+                    "children":""
+                },
+                {
+                    "name": "Physics",
+                    "children":""
+                },
+                {
+                    "name":"Cryptography",
+                    "children":""
+                },
+                {
+                    "name":"Programming",
+                    "children":""
+                }
+            ]
         },
         {
             "name":"Unwind",
-            "children":""
+            "children":[
+                {
+                    "name":"Reading",
+                    "children":""
+                },
+                {
+                    "name":"T.V. / Movies",
+                    "children":""
+                },
+                {
+                    "name":"Knitting",
+                    "children":""
+                },
+                {
+                    "name":"Crochet",
+                    "children":""
+                },
+                {
+                    "name":"Sewing",
+                    "children":""
+                }
+            ]
         }
-    ],
-    "isMain": "true"
+    ]
   }
   
