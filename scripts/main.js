@@ -22,7 +22,6 @@ chartParent.append(svg.node());
 d3.json("data.json").then(function (json) {
   console.log(json);
   root = d3.hierarchy(json);
-  // links = root.links();
   root.childrenCollapsed = true;
   root.hidden = false;
   for (var i = 1; i < root.descendants().length; i++) {
@@ -46,10 +45,7 @@ function update(focusNode) {
     nodesToDraw.splice(index, 1);
     console.log(nodesToDraw);
   }
-  // console.log("update called");
-  // console.log(nodesToDraw);
-  // console.log(focusNode); // L1 focus node is hidden??
-  // console.log(focusNode.parent);
+
   var links = root.links().filter(function (d) {
     return d.source.hidden && d.target.hidden;
   });
@@ -75,7 +71,7 @@ function update(focusNode) {
   const link = svg
     .append("g")
     .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6)
+    .attr("stroke-opacity", 0)
     .selectAll("line")
     .data(links)
     .join("line");
@@ -84,7 +80,7 @@ function update(focusNode) {
   visNodes
     .append("polygon")
     .attr("points", (d) =>
-      getOctagonPoints(d.parent == null ? bigSize : smallSize),
+      getOctagonPoints(d == focusNode ? bigSize : smallSize),
     )
     .attr("fill", "#663399");
 
@@ -93,7 +89,7 @@ function update(focusNode) {
     .text((d) => d.data.name)
     .attr("text-anchor", "middle")
     .attr("fill", "white")
-    .style("font-size", (d) => (d.parent == null ? bigFont : smallFont));
+    .style("font-size", (d) => (d == focusNode ? bigFont : smallFont));
   var parentNode;
   if (focusNode != root) {
     parentNode = svg
@@ -139,18 +135,33 @@ function onNodeClick(d) {
   var nextFocus = targetNode;
   if (targetNode.children != null) {
     if (targetNode.childrenCollapsed) {
-      //already collapsed
+      //already collapsed, switching this to be focus
       targetNode.children.forEach((child) => {
         child.hidden = false;
       });
       targetNode.childrenCollapsed = false;
+      //hide siblings
+      if (targetNode != root) {
+        targetNode.parent.children.forEach((child) => {
+          if (child != targetNode) {
+            child.hidden = true;
+          }
+        });
+      }
     } else {
+      //targetNode USUALLY no longer focus
       targetNode.children.forEach((child) => {
         child.hidden = true;
       });
       targetNode.childrenCollapsed = true;
+      //show siblings
       if (targetNode != root) {
         nextFocus = targetNode.parent;
+        targetNode.parent.children.forEach((child) => {
+          if (child != targetNode) {
+            child.hidden = false;
+          }
+        });
       }
     }
     update(nextFocus);
