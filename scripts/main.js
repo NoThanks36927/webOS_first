@@ -1,5 +1,11 @@
 function getOctagonPoints(r) {
-  return `${r / 3},${r} ${r},${r / 3} ${r},${-r / 3} ${r / 3},${-r} ${-r / 3},${-r} ${-r},${-r / 3} ${-r},${r / 3} ${-r / 3},${r}`;
+  const a = 0.70710678118;
+  // const h = factor * r;
+  const y = (2 * r) / (1 + 2 * a);
+  return `${-0.5 * y},${r} ${0.5 * y},${r} ${r},${0.5 * y} ${r},${-0.5 * y} ${0.5 * y},${-r} ${-0.5 * y},${-r} ${-r},${-0.5 * y} ${-r},${0.5 * y}`;
+  // return `${r / 3},${r} ${r},${r / 3} ${r},${-r / 3} ${r / 3},${-r} ${-r / 3},${-r} ${-r},${-r / 3} ${-r},${r / 3} ${-r / 3},${r}`;
+  // return `${h - r},${r} ${r - h},${r} ${r},${r - h} ${r},${h - r} ${r - h},${-r} ${h - r},${-r} ${-r},${h - r} ${-r},${r - h}`;
+  return ``;
 }
 
 const chartParent = document.getElementById("chartHolder");
@@ -57,13 +63,13 @@ function update(focusNode) {
       d3
         .forceLink(links)
         .id((d) => d.id)
-        .distance(300)
-        .strength(0.5),
+        .distance(1000)
+        .strength(0.1),
     )
     .force("charge", d3.forceManyBody())
     .force(
       "collision",
-      d3.forceCollide((d) => (d.parent == null ? bigSize : smallSize) + 10),
+      d3.forceCollide((d) => (d.parent == null ? bigSize : smallSize) + 20),
     )
     .force("x", d3.forceX())
     .force("y", d3.forceY());
@@ -82,13 +88,15 @@ function update(focusNode) {
     .attr("points", (d) =>
       getOctagonPoints(d == focusNode ? bigSize : smallSize),
     )
-    .attr("fill", "#663399");
+    .attr("stroke", "#cca646")
+    .attr("stroke-width", 4)
+    .attr("fill", "#68aac6");
 
   visNodes
     .append("text")
     .text((d) => d.data.name)
     .attr("text-anchor", "middle")
-    .attr("fill", "white")
+    .attr("fill", "#031016")
     .style("font-size", (d) => (d == focusNode ? bigFont : smallFont));
   var parentNode;
   if (focusNode != root) {
