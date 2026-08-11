@@ -17,6 +17,7 @@ const bigSize = 125;
 const smallSize = 75;
 const bigFont = "24px";
 const smallFont = "16px";
+const smallestFont = "12px";
 
 const svg = d3
   .create("svg")
@@ -42,6 +43,7 @@ function update(focusNode) {
   svg.selectAll("line").remove();
   svg.selectAll("polygon").remove();
   svg.selectAll("text").remove();
+  svg.selectAll("a").remove();
   var nodesToDraw = root.descendants().filter(function (d) {
     return !d.hidden;
   });
@@ -83,21 +85,63 @@ function update(focusNode) {
     .join("line");
   const visNodes = svg.append("g").selectAll("g").data(nodesToDraw).join("g");
 
-  visNodes
-    .append("polygon")
-    .attr("points", (d) =>
-      getOctagonPoints(d == focusNode ? bigSize : smallSize),
-    )
-    .attr("stroke", "#cca646")
-    .attr("stroke-width", 4)
-    .attr("fill", "#68aac6");
+  // visNodes
+  //   .filter((d) => d.data.name.includes("https"))
+  //   .append("a")
+  //   .attr("href", d.data.name)
+  //   .attr("target", "_blank");
 
-  visNodes
-    .append("text")
-    .text((d) => d.data.name)
-    .attr("text-anchor", "middle")
-    .attr("fill", "#031016")
-    .style("font-size", (d) => (d == focusNode ? bigFont : smallFont));
+  visNodes.each(function (d) {
+    const currentNode = d3.select(this);
+
+    const currentContainer = d.data.name.includes("https")
+      ? currentNode
+          .append("a")
+          .attr("href", d.data.name)
+          .attr("target", "_blank")
+      : currentNode;
+
+    currentContainer
+      .append("polygon")
+      .attr("points", (d) =>
+        getOctagonPoints(d == focusNode ? bigSize : smallSize),
+      )
+      .attr("stroke", "#cca646")
+      .attr("stroke-width", 4)
+      .attr("fill", "#68aac6");
+
+    currentContainer
+      .append("text")
+      .text((d) => d.data.name)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#031016")
+      .style("font-size", (d) => {
+        if (d == focusNode) {
+          return bigFont;
+        } else if (d.data.name.includes("https")) {
+          return smallestFont;
+        } else {
+          return smallFont;
+        }
+      });
+  });
+
+  // visNodes
+  //   .append("polygon")
+  //   .attr("points", (d) =>
+  //     getOctagonPoints(d == focusNode ? bigSize : smallSize),
+  //   )
+  //   .attr("stroke", "#cca646")
+  //   .attr("stroke-width", 4)
+  //   .attr("fill", "#68aac6");
+
+  // visNodes
+  //   .append("text")
+  //   .text((d) => d.data.name)
+  //   .attr("text-anchor", "middle")
+  //   .attr("fill", "#031016")
+  //   .style("font-size", (d) => (d == focusNode ? bigFont : smallFont));
+
   var parentNode;
   if (focusNode != root) {
     parentNode = svg

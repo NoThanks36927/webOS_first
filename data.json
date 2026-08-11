@@ -48,7 +48,12 @@
             "children":[
                 {
                     "name":"Reading",
-                    "children":""
+                    "children":[
+                        {
+                            "name":"https://www.gutenberg.org/",
+                            "children":""
+                        }
+                    ]
                 },
                 {
                     "name":"T.V. / Movies",
@@ -56,11 +61,21 @@
                 },
                 {
                     "name":"Knitting",
-                    "children":""
+                    "children":[
+                        {
+                            "name":"https://www.ravelry.com/patterns",
+                            "children":""
+                        }
+                    ]
                 },
                 {
                     "name":"Crochet",
-                    "children":""
+                    "children":[
+                        {
+                            "name":"https://www.ravelry.com/patterns",
+                            "children":""
+                        }
+                    ]
                 },
                 {
                     "name":"Sewing",
