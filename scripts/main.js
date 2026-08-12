@@ -45,17 +45,22 @@ function update(focusNode) {
   svg.selectAll("text").remove();
   svg.selectAll("a").remove();
   var nodesToDraw = root.descendants().filter(function (d) {
-    return !d.hidden;
+    if (d.hidden) {
+      return false;
+    }
+    let ancestor = focusNode.parent;
+    while (ancestor) {
+      if (d == ancestor) {
+        return false;
+      }
+      ancestor = ancestor.parent;
+      // if current node is current ancestor, hide. continue checking against older ancestors until root reached. if still clear, show.
+    }
+    return true;
   });
 
-  if (focusNode != root) {
-    const index = nodesToDraw.indexOf(focusNode.parent);
-    nodesToDraw.splice(index, 1);
-    console.log(nodesToDraw);
-  }
-
   var links = root.links().filter(function (d) {
-    return d.source.hidden && d.target.hidden;
+    return !d.source.hidden && !d.target.hidden;
   });
 
   const simulation = d3
@@ -65,7 +70,7 @@ function update(focusNode) {
       d3
         .forceLink(links)
         .id((d) => d.id)
-        .distance(1000)
+        .distance(500)
         .strength(0.1),
     )
     .force("charge", d3.forceManyBody())
@@ -85,16 +90,10 @@ function update(focusNode) {
     .join("line");
   const visNodes = svg.append("g").selectAll("g").data(nodesToDraw).join("g");
 
-  // visNodes
-  //   .filter((d) => d.data.name.includes("https"))
-  //   .append("a")
-  //   .attr("href", d.data.name)
-  //   .attr("target", "_blank");
-
   visNodes.each(function (d) {
     const currentNode = d3.select(this);
-
-    const currentContainer = d.data.name.includes("https")
+    const isLink = d.data.name.includes("https");
+    const currentContainer = isLink
       ? currentNode
           .append("a")
           .attr("href", d.data.name)
@@ -112,50 +111,27 @@ function update(focusNode) {
 
     currentContainer
       .append("text")
-      .text((d) => d.data.name)
+      .text((d) => {
+        let toReturn = d.data.name;
+        if (isLink) {
+          toReturn = toReturn.substring(12);
+          const endOfName = toReturn.indexOf(".");
+          toReturn = toReturn.substring(0, endOfName);
+        }
+        return toReturn;
+      })
       .attr("text-anchor", "middle")
       .attr("fill", "#031016")
       .style("font-size", (d) => {
         if (d == focusNode) {
           return bigFont;
-        } else if (d.data.name.includes("https")) {
+        } else if (isLink) {
           return smallestFont;
         } else {
           return smallFont;
         }
       });
   });
-
-  // visNodes
-  //   .append("polygon")
-  //   .attr("points", (d) =>
-  //     getOctagonPoints(d == focusNode ? bigSize : smallSize),
-  //   )
-  //   .attr("stroke", "#cca646")
-  //   .attr("stroke-width", 4)
-  //   .attr("fill", "#68aac6");
-
-  // visNodes
-  //   .append("text")
-  //   .text((d) => d.data.name)
-  //   .attr("text-anchor", "middle")
-  //   .attr("fill", "#031016")
-  //   .style("font-size", (d) => (d == focusNode ? bigFont : smallFont));
-
-  var parentNode;
-  if (focusNode != root) {
-    parentNode = svg
-      .append("g")
-      .selectAll("g")
-      .data(focusNode.parent)
-      .join("g");
-    parentNode
-      .append("circle")
-      .attr("r", 100)
-      // .attr("cx")
-      // .attr("cy")
-      .style("fill", "#45b1ce00");
-  }
 
   simulation.on("tick", () => {
     link
@@ -165,21 +141,9 @@ function update(focusNode) {
       .attr("y2", (d) => d.target.y);
 
     visNodes.attr("transform", (d) => `translate(${d.x},${d.y})`);
-    if (focusNode != root) {
-      parentNode
-        .attr("cx", function (d) {
-          return d.x;
-        })
-        .attr("cy", function (d) {
-          return d.y;
-        });
-    }
   });
 
   visNodes.on("click", onNodeClick);
-  if (focusNode != root) {
-    parentNode.on("click", onNodeClick);
-  }
 }
 
 function onNodeClick(d) {
@@ -220,38 +184,4 @@ function onNodeClick(d) {
   } else {
     console.log("nothing to expand :(");
   }
-
-  // // console.log(targetNode);
-  // // console.log(targetNode.parent);
-  // if (targetNode.childrenCollapsed) {
-  //   //expand
-  //   console.log("this was collapsed , expanding");
-  //   targetNode.children.forEach((child) => {
-  //     child.hidden = false;
-  //   });
-  //   targetNode.childrenCollapsed = false;
-  //   if (targetNode != root) {
-  //     targetNode.parent.children.forEach((child) => {
-  //       child.hidden = true;
-  //     });
-  //     targetNode.parent.childrenCollapsed = true;
-  //   }
-  //   update(targetNode);
-  // } else {
-  //   //collapse
-  //   console.log("this was expanded, collapsing");
-  //   targetNode.children.forEach((child) => {
-  //     child.hidden = true;
-  //   });
-  //   targetNode.childrenCollapsed = true;
-  //   if (targetNode != root) {
-  //     targetNode.parent.children.forEach((child) => {
-  //       child.hidden = false;
-  //     });
-  //     targetNode.parent.childrenCollapsed = false;
-  //     update(targetNode.parent);
-  //   } else {
-  //     update(targetNode);
-  //   }
-  // }
 }
