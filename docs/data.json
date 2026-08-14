@@ -8,7 +8,7 @@
                     "name": "WebOS",
                     "children":[
                         {
-                            "name": "https://github.com/sushiorange3/webOS_first",
+                            "name": "https://github.com/sushiorange3/webOsLandingDemo",
                             "children":""
                         }
                     ]

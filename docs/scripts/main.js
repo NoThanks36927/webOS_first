@@ -114,7 +114,11 @@ function update(focusNode) {
       .text((d) => {
         let toReturn = d.data.name;
         if (isLink) {
-          toReturn = toReturn.substring(12);
+          if (toReturn.includes("www")) {
+            toReturn = toReturn.substring(12);
+          } else {
+            toReturn = toReturn.substring(8);
+          }
           const endOfName = toReturn.indexOf(".");
           toReturn = toReturn.substring(0, endOfName);
         }
